@@ -167,6 +167,7 @@ Response: `valid`, `invalid` (transactions with effective remanent after q and p
 
 ---
 
-## License
+## Contributors
 
-MIT
+- [Saurabh Raj](https://github.com/rajsaurabh1000)
+
