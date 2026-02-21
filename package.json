@@ -1,0 +1,18 @@
+{
+  "name": "blackrock-challenge",
+  "version": "1.0.0",
+  "description": "Auto-saving retirement API - expense rounding, NPS and Index returns",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node test/run-all.js && node test/api-test.js",
+    "test:unit": "node test/run-all.js",
+    "test:api": "node test/api-test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}

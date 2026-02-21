@@ -1,0 +1,10 @@
+# Optional: run with docker compose up
+# Application is self-contained; no external DB required.
+services:
+  app:
+    build: .
+    image: blk-hacking-ind-name-lastname
+    ports:
+      - "5477:5477"
+    environment:
+      - PORT=5477
