@@ -1,37 +1,37 @@
-# Blackrock Challenge – Self-saving for your retirement
+# Blackrock Challenge – Auto-Saving for Retirement
 
-Production-grade APIs for expense-based micro-investments: parse expenses into transactions, validate by wage and max investment, apply q/p/k temporal rules, and compute NPS (7.11%) and Index fund (14.49%) returns with inflation adjustment.
+A REST API that supports automated retirement savings through expense-based micro-investments. It parses expenses into rounded transactions, validates them against wage and investment limits, applies temporal rules (q, p, and k periods), and computes returns for both **NPS** (7.11% with tax benefit) and **Index fund** (14.49%, inflation-adjusted).
 
 ---
 
-## Repository contents (default branch)
+## What’s in this repository
 
 | Item | Location |
 |------|----------|
 | Source code | `src/` (server, routes, lib, config) |
 | Dockerfile | `Dockerfile` |
 | Compose | `compose.yaml` |
-| Test automation | `test/run-all.js`, `test/api-test.js` |
-| README | This file |
+| Tests | `test/run-all.js`, `test/api-test.js` |
+| Documentation | This file |
 
-Public repository and public container image required for submission. No repository changes after the challenge deadline.
-
----
-
-## Requirements and dependencies
-
-- **Node.js** ≥ 18 (recommended: 20 LTS)
-- **npm** (included with Node.js)
-- **Docker** and **Docker Compose** (optional; for containerized run and pre-built image)
-
-**Runtime:** Single dependency `express`. No database or external services; the application is self-contained.
+The repository and its container image are intended to be **public** for submission. No changes should be made after the challenge deadline.
 
 ---
 
-## Configure
+## Requirements
 
-- **Port:** Set `PORT` to the port the server will listen on. Default: `5477`.
-- **Request body size:** JSON body limit is 10 MB (configurable in `src/config.js`).
+- **Node.js** ≥ 18 (20 LTS recommended)
+- **npm** (bundled with Node.js)
+- **Docker** and **Docker Compose** (optional; for running the pre-built image or building locally)
+
+**Runtime:** The only dependency is **express**. There is no database or other external service; the app is self-contained.
+
+---
+
+## Configuration
+
+- **Port** — The server listens on the port given by the `PORT` environment variable. Default: **5477**.
+- **Request body size** — JSON payloads are limited to 10 MB (see `src/config.js` to change this).
 
 Example:
 
@@ -41,63 +41,65 @@ export PORT=5477
 
 ---
 
-## Run
+## Running the application
 
-### Local (development)
+### Locally
 
 ```bash
 npm install
 npm start
 ```
 
-Server listens on **http://localhost:5477** (or the value of `PORT`).
+The server will be available at **http://localhost:5477** (or the port you set via `PORT`).
 
-### Docker (pre-built image, amd64 + arm64)
+### Docker (pre-built image)
+
+The image supports **linux/amd64** and **linux/arm64** and is published on GitHub Container Registry:
 
 ```bash
 docker pull ghcr.io/rajsaurabh1000/blackrock-hackathon-saurabhraj:latest
 docker run -d -p 5477:5477 ghcr.io/rajsaurabh1000/blackrock-hackathon-saurabhraj:latest
 ```
 
-To build from source instead: `docker build -t blackrock-challenge .` then `docker run -d -p 5477:5477 blackrock-challenge`.
+To build the image yourself: `docker build -t blackrock-challenge .` then `docker run -d -p 5477:5477 blackrock-challenge`.
 
 ### Docker Compose
+
+From the repository root:
 
 ```bash
 docker compose up -d
 ```
 
-See **DOCKER.md** for more options (port mapping, running tests inside the container).
+For more options (e.g. port mapping, running tests inside the container), see **DOCKER.md**.
 
 ---
 
-## Test
+## Testing
 
-All tests live under the `test/` directory. Each test file includes a header comment with: **Test type**, **Validation**, and **Command** (as per challenge requirements).
+Tests are in the `test/` directory. Each test file documents **test type**, **validation**, and **command** in a header comment, as required by the challenge.
 
-### Run all tests
+### Run the full test suite
 
 ```bash
 npm test
 ```
 
-This runs:
+This executes:
 
-1. **Unit / logic tests** (`test/run-all.js`): parse, filter (q/p/k), NPS and Index returns against the challenge PDF example (4 expenses, full-year amount 145, expected profits and return).
-2. **API integration tests** (`test/api-test.js`): HTTP requests to all endpoints. If the server is not reachable, API tests are skipped and the process exits with code 0 so CI does not fail.
+1. **Unit / logic tests** (`test/run-all.js`) — Parse, filter (q/p/k), and return calculations against the challenge example (4 expenses, full-year amount 145, expected NPS profits and Index return).
+2. **API integration tests** (`test/api-test.js`) — HTTP calls to all endpoints. If the server is not running, API tests are skipped and the process exits successfully so CI can run without a live server.
 
-### Run with server (full API coverage)
+### Full API coverage (with server running)
+
+In one terminal, start the server; in another, run:
 
 ```bash
-# Terminal 1
-npm start
-
-# Terminal 2
 npm test
 node test/api-test.js
 ```
 
-### Run unit tests inside Docker
+### Unit tests inside Docker
 
 ```bash
 docker run --rm ghcr.io/rajsaurabh1000/blackrock-hackathon-saurabhraj:latest node test/run-all.js
@@ -107,38 +109,29 @@ docker run --rm ghcr.io/rajsaurabh1000/blackrock-hackathon-saurabhraj:latest nod
 
 ## Deployment (challenge requirements)
 
-- **Container:** Application runs on **port 5477** inside the container.
-- **Port mapping:** `-p 5477:5477` (host:container).
-- **Dockerfile:** First lines contain the pull and run commands for the published image (`ghcr.io/rajsaurabh1000/blackrock-hackathon-saurabhraj:latest`). Base image is Linux (Debian Bookworm Slim) with selection criteria noted in the Dockerfile.
-- **Compose:** `compose.yaml` defines the service and can be run with `docker compose up -d`. No external services required.
+- **Container** — The application listens on **port 5477** inside the container.
+- **Port mapping** — Use `-p 5477:5477` (host:container).
+- **Dockerfile** — The first lines document the pull and run commands for the published image (`ghcr.io/rajsaurabh1000/blackrock-hackathon-saurabhraj:latest`). The base image is Linux (Debian Bookworm Slim); the Dockerfile comments explain the choice.
+- **Compose** — `compose.yaml` defines the service; run it with `docker compose up -d`. No external services are required.
 
 ---
 
-## Deployment (challenge requirements)
+## API reference
 
-- **Container:** Application runs on **port 5477** inside the container.
-- **Port mapping:** `-p 5477:5477` (host:container).
-- **Dockerfile:** First lines contain the pull and run commands for the published image (`ghcr.io/rajsaurabh1000/blackrock-hackathon-saurabhraj:latest`). Base image is Linux (Debian Bookworm Slim) with selection criteria noted in the Dockerfile.
-- **Compose:** `compose.yaml` defines the service and can be run with `docker compose up -d`. No external services required.
-
----
-
-## API
-
-Base path: **`/blackrock/challenge/v1`**
+All challenge endpoints are under the base path **`/blackrock/challenge/v1`**.
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/` | API overview (name, base path, endpoints) |
-| GET | `/health` | Liveness: `{ "status": "ok" }` |
-| POST | `/transactions/parse` | Expenses → transactions (ceiling, remanent) |
-| POST | `/transactions/validator` | Validate by wage → valid, invalid, duplicate |
-| POST | `/transactions/filter` | Apply q, p → valid, invalid |
-| POST | `/returns/nps` | NPS returns (7.11%, tax benefit) by k periods |
-| POST | `/returns/index` | Index returns (14.49%, inflation-adjusted) by k periods |
-| GET | `/performance` | Uptime (HH:mm:ss.SSS), memory (MB), threads |
+| GET | `/` | API overview (name, base path, list of endpoints) |
+| GET | `/health` | Liveness check; returns `{ "status": "ok" }` |
+| POST | `/transactions/parse` | Convert expenses into transactions (ceiling and remanent) |
+| POST | `/transactions/validator` | Validate transactions by wage; returns valid, invalid, and duplicate |
+| POST | `/transactions/filter` | Apply q and p periods; returns valid and invalid transactions |
+| POST | `/returns/nps` | NPS returns (7.11%, tax benefit) per k period |
+| POST | `/returns/index` | Index fund returns (14.49%, inflation-adjusted) per k period |
+| GET | `/performance` | Uptime (HH:mm:ss.SSS), memory (MB), and thread count |
 
-**Timestamp format:** `YYYY-MM-DD HH:mm:ss`. All period ranges are inclusive (start and end).
+**Timestamps** — Use the format `YYYY-MM-DD HH:mm:ss`. All period ranges are **inclusive** (start and end).
 
 ### Example: parse
 
@@ -148,33 +141,32 @@ curl -X POST http://localhost:5477/blackrock/challenge/v1/transactions/parse \
   -d '{"expenses":[{"date":"2023-10-12 20:15:00","amount":250}]}'
 ```
 
-### Example: validator
+### Validator
 
-Request body: `wage` (number), optional `maxAmountToInvest`, `transactions` (array of `{ date, amount, ceiling, remanent }`).  
-Response: `valid`, `invalid`, `duplicate`.
+**Request:** `wage` (number), optional `maxAmountToInvest`, and `transactions` (array of `{ date, amount, ceiling, remanent }`).  
+**Response:** `valid`, `invalid`, and `duplicate` arrays.
 
-### Example: filter
+### Filter
 
-Request body: `q` (fixed-amount periods), `p` (extra-amount periods), `k` (evaluation periods), `transactions`.  
-Response: `valid`, `invalid` (transactions with effective remanent after q and p).
+**Request:** `q` (fixed-amount periods), `p` (extra-amount periods), `k` (evaluation periods), and `transactions`.  
+**Response:** `valid` and `invalid`; valid entries include the effective remanent after applying q and p.
 
-### Returns (NPS / Index)
+### Returns (NPS and Index)
 
-- **NPS:** Body: `age`, `wage`, optional `inflation`, `q`, `p`, `k`, `transactions`. Response: `transactionsTotalAmount`, `transactionsTotalCeiling`, `savingsByDates` (per k: start, end, amount, profits, taxBenefit).
-- **Index:** Body: `age`, optional `inflation`, `q`, `p`, `k`, `transactions`. Response: `transactionsTotalAmount`, `transactionsTotalCeiling`, `savingsByDates` (per k: start, end, amount, return).
+- **NPS** — Request: `age`, `wage`, optional `inflation`, `q`, `p`, `k`, `transactions`. Response: `transactionsTotalAmount`, `transactionsTotalCeiling`, and `savingsByDates` (per k: start, end, amount, profits, taxBenefit).
+- **Index** — Request: `age`, optional `inflation`, `q`, `p`, `k`, `transactions`. Response: `transactionsTotalAmount`, `transactionsTotalCeiling`, and `savingsByDates` (per k: start, end, amount, return).
 
 ---
 
 ## Design and security
 
-- **Validation:** All request bodies and numeric inputs are validated; invalid payloads return 400 with a clear `error` message.
-- **No unsafe patterns:** No user input in file paths or shell commands; no `eval` or dynamic `require`.
-- **Secrets:** No hardcoded credentials; use environment variables for any sensitive configuration.
-- **Docker:** Base image `node:20-bookworm-slim` (Linux, LTS). Graceful shutdown on SIGTERM/SIGINT for container orchestration.
+- **Input validation** — Request bodies and numeric fields are validated; invalid input returns **400** with a clear `error` message.
+- **Safe usage** — No user input is used in file paths or shell commands; no `eval` or dynamic `require`.
+- **Secrets** — No credentials are hardcoded; use environment variables for any sensitive configuration.
+- **Docker** — Base image is `node:20-bookworm-slim` (Linux, LTS). The process handles SIGTERM and SIGINT for graceful shutdown in container environments.
 
 ---
 
 ## Contributors
 
 - [Saurabh Raj](https://github.com/rajsaurabh1000)
-
