@@ -116,6 +116,32 @@ docker run --rm ghcr.io/rajsaurabh1000/blackrock-hackathon-saurabhraj:latest nod
 
 ---
 
+## Docker and CI/CD
+
+### Dockerfile
+
+- **Base image** — `node:20-bookworm-slim` (Node 20 LTS on Debian Bookworm Slim) for a small, maintained runtime.
+- **Layering** — `package.json` is copied first and `npm install --omit=dev` runs in its own layer so dependency install is cached when only app code changes.
+- **Contents** — `src/` and `test/` are copied; production run uses `node src/server.js`. No dev dependencies in the image.
+- **Exposure** — `EXPOSE 5477` documents the app port; the first lines of the Dockerfile contain the pull and run commands for the published image (challenge requirement).
+
+### Docker Compose
+
+- **File** — `compose.yaml` (challenge naming). Single service `app` that builds from the repo and runs on port 5477.
+- **Image** — Built as `blackrock-challenge`; `PORT=5477` is set in the service environment.
+- **Usage** — `docker compose up -d`; no external services or volumes required.
+
+### GitHub Actions (Docker build and push)
+
+- **Workflow** — `.github/workflows/docker-push.yml`. Runs on every push to `main` or `master`.
+- **Steps** — Checkout; set up Docker Buildx; log in to GitHub Container Registry (ghcr.io) with `GITHUB_TOKEN`; build and push the image.
+- **Image** — Pushed to `ghcr.io/rajsaurabh1000/blackrock-hackathon-saurabhraj:latest`.
+- **Platforms** — Multi-platform build for **linux/amd64** and **linux/arm64** (e.g. Intel/AMD and Apple Silicon or ARM servers).
+- **Cache** — GitHub Actions cache (`cache-from` / `cache-to` type=gha) is used to speed up repeated builds.
+- **Permissions** — Workflow needs `contents: read` and `packages: write` so it can push to GHCR.
+
+---
+
 ## API reference
 
 All challenge endpoints are under the base path **`/blackrock/challenge/v1`**.
