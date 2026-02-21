@@ -30,6 +30,7 @@ jobs:
         with:
           context: .
           push: true
+          platforms: linux/amd64,linux/arm64
           tags: ghcr.io/rajsaurabh1000/blackrock-hackathon-saurabhraj:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
