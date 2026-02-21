@@ -265,6 +265,39 @@ curl -s $BASE/performance | jq
 
 ---
 
+## System design
+
+### Architecture
+
+- **Layered structure** — HTTP layer (`server.js`, `routes/`) handles requests and validation; business logic lives in `lib/` (parse, validator, filter, returns, dates). Routes delegate to lib functions and return JSON. No business logic in route handlers.
+- **Stateless API** — No server-side session or in-memory state between requests. Each request is independent; the service can be scaled horizontally behind a load balancer.
+- **Single process** — One Node process per container; no database or external service calls, so there are no outbound I/O retries inside the app.
+
+### Design patterns
+
+- **Router-per-resource** — Express routers are split by domain: `transactions` (parse, validator, filter), `returns` (nps, index), `performance`. Mounted under a versioned base path (`/blackrock/challenge/v1`).
+- **Centralized configuration** — Port and body limit come from `src/config.js`; env-based (e.g. `PORT`) with safe defaults. Keeps tunables in one place and avoids hardcoded values.
+- **Global middleware** — `express.json()` with a configurable body size limit to protect against large payloads; applied before any route.
+- **Central error handling** — A 404 handler returns JSON for unknown paths; a global error handler returns 500 with a JSON `error` message. Validation errors are returned as 400 with a clear message from the route.
+
+### Retry and resilience
+
+- **Idempotent endpoints** — All POST endpoints are deterministic: the same request body produces the same response. Clients can safely retry on network failure or timeouts without duplicate side effects (there are no server-side side effects like writes).
+- **Client-side retry** — The API does not call external services, so there is no server-side retry logic. Integrators and clients should implement retries (e.g. exponential backoff) for transient failures when calling this API. Use `GET /health` or `GET /blackrock/challenge/v1/health` for liveness before or between retries.
+- **Graceful shutdown** — On SIGTERM/SIGINT the server stops accepting new connections, closes the HTTP server, then exits. A 10s timeout forces exit if shutdown hangs. Suitable for orchestrated environments (e.g. Kubernetes, Docker).
+
+### Operability
+
+- **Health and performance** — `GET /health` (and versioned `/blackrock/challenge/v1/health`) for liveness; `GET /blackrock/challenge/v1/performance` for uptime, memory, and thread count. Supports readiness/liveness probes and basic monitoring.
+- **Port conflict** — If the configured port is in use (EADDRINUSE), the process logs a clear message and exits with code 1 instead of binding to a different port.
+
+### Scalability
+
+- **Horizontal scaling** — Stateless design allows running multiple instances behind a load balancer; no shared in-process state.
+- **No external dependencies** — No database or third-party APIs, so availability and latency are not tied to external retries or connection pools.
+
+---
+
 ## Design and security
 
 - **Input validation** — Request bodies and numeric fields are validated; invalid input returns **400** with a clear `error` message.
