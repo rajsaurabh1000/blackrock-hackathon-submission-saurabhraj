@@ -1,4 +1,4 @@
-# Blackrock Challenge – Auto-Saving for Retirement
+# Blackrock Challenge – Self-saving for your retirement
 
 A REST API that supports automated retirement savings through expense-based micro-investments. It parses expenses into rounded transactions, validates them against wage and investment limits, applies temporal rules (q, p, and k periods), and computes returns for both **NPS** (7.11% with tax benefit) and **Index fund** (14.49%, inflation-adjusted).
 
@@ -170,3 +170,4 @@ curl -X POST http://localhost:5477/blackrock/challenge/v1/transactions/parse \
 ## Contributors
 
 - [Saurabh Raj](https://github.com/rajsaurabh1000)
+
