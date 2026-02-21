@@ -1,14 +1,15 @@
 'use strict';
 
 const express = require('express');
+const { getPort, BODY_LIMIT } = require('./config');
 const transactionsRouter = require('./routes/transactions');
 const returnsRouter = require('./routes/returns');
 const performanceRouter = require('./routes/performance');
 
-const PORT = Number(process.env.PORT) || 5477;
+const PORT = getPort();
 const app = express();
 
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: BODY_LIMIT }));
 
 app.use('/blackrock/challenge/v1/transactions', transactionsRouter);
 app.use('/blackrock/challenge/v1/returns', returnsRouter);
@@ -54,3 +55,13 @@ server.on('error', (err) => {
   }
   throw err;
 });
+
+function shutdown(signal) {
+  console.log(`${signal} received; closing server.`);
+  server.close(() => {
+    process.exit(0);
+  });
+  setTimeout(() => process.exit(1), 10000);
+}
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));

@@ -2,9 +2,9 @@
 'use strict';
 
 /**
- * API integration tests: HTTP calls to the running server.
- * Run with server up: npm start (then in another terminal) node test/api-test.js
- * Or after npm test; if server is not reachable, skips and exits 0.
+ * Test type: API integration / HTTP contract
+ * Validation: All endpoints return expected status codes and response shape; validator returns 400 for invalid wage with error message.
+ * Command: node test/api-test.js (server must be running on PORT, or set BASE_URL). Or: npm test (runs after unit tests; skips if server unreachable).
  */
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:5477';

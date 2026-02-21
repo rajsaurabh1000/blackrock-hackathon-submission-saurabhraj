@@ -1,5 +1,5 @@
-# Build: docker build -t blackrock-challenge .
-# Pre-built: ghcr.io/rajsaurabh1000/blackrock-hackathon-saurabhraj:latest
+# Pull:  docker pull ghcr.io/rajsaurabh1000/blackrock-hackathon-saurabhraj:latest
+# Run:   docker run -d -p 5477:5477 ghcr.io/rajsaurabh1000/blackrock-hackathon-saurabhraj:latest
 FROM node:20-bookworm-slim
 
 WORKDIR /app

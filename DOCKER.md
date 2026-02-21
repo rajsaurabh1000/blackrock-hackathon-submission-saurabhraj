@@ -1,6 +1,6 @@
 # Docker – Blackrock Challenge API
 
-Run the API in a container. **Port 5477** must be available (or map to another host port).
+Run the API in a container. Application listens on **port 5477** inside the container; use `-p 5477:5477` for host mapping.
 
 ---
 

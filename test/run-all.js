@@ -2,8 +2,8 @@
 'use strict';
 
 /**
- * Test type: Integration / API contract
- * Validation: Parse, filter (q/p/k), and returns match the PDF example (4 expenses, q/p/k rules, full-year amount 145, NPS/Index outputs).
+ * Test type: Unit / integration (business logic)
+ * Validation: Parse, filter (q/p/k), and returns match the challenge PDF example (4 expenses, q/p/k rules, full-year amount 145, NPS profits ~86.88, Index return ~1829.5).
  * Command: node test/run-all.js
  */
 
