@@ -167,10 +167,11 @@ export BASE="http://localhost:5477/blackrock/challenge/v1"
 ```
 
 ```bash
-curl -s $BASE/
-curl -s $BASE/health
+curl -s $BASE/ | jq
+curl -s $BASE/health | jq
 ```
 
+## Parse
 ```bash
 curl -s -X POST "$BASE/transactions/parse" \
   -H "Content-Type: application/json" \
@@ -181,9 +182,9 @@ curl -s -X POST "$BASE/transactions/parse" \
       {"date": "2023-07-01 21:59:00", "amount": 620},
       {"date": "2023-12-17 08:09:00", "amount": 480}
     ]
-  }'
+  }' | jq
 ```
-
+## Validator
 ```bash
 curl -s -X POST "$BASE/transactions/validator" \
   -H "Content-Type: application/json" \
@@ -195,9 +196,9 @@ curl -s -X POST "$BASE/transactions/validator" \
       {"date": "2023-07-01 21:59:00", "amount": 620, "ceiling": 625, "remanent": 75},
       {"date": "2023-12-17 08:09:00", "amount": 480, "ceiling": 500, "remanent": 75}
     ]
-  }'
+  }' | jq
 ```
-
+## Filter
 ```bash
 curl -s -X POST "$BASE/transactions/filter" \
   -H "Content-Type: application/json" \
@@ -214,9 +215,9 @@ curl -s -X POST "$BASE/transactions/filter" \
       {"date": "2023-07-01 21:59:00", "amount": 620, "ceiling": 625, "remanent": 75},
       {"date": "2023-12-17 08:09:00", "amount": 480, "ceiling": 500, "remanent": 75}
     ]
-  }'
+  }' | jq
 ```
-
+## NPS
 ```bash
 curl -s -X POST "$BASE/returns/nps" \
   -H "Content-Type: application/json" \
@@ -235,9 +236,9 @@ curl -s -X POST "$BASE/returns/nps" \
       {"date": "2023-07-01 21:59:00", "amount": 620, "ceiling": 625, "remanent": 75},
       {"date": "2023-12-17 08:09:00", "amount": 480, "ceiling": 500, "remanent": 75}
     ]
-  }'
+  }' | jq
 ```
-
+## Index
 ```bash
 curl -s -X POST "$BASE/returns/index" \
   -H "Content-Type: application/json" \
@@ -255,11 +256,11 @@ curl -s -X POST "$BASE/returns/index" \
       {"date": "2023-07-01 21:59:00", "amount": 620, "ceiling": 625, "remanent": 75},
       {"date": "2023-12-17 08:09:00", "amount": 480, "ceiling": 500, "remanent": 75}
     ]
-  }'
+  }' | jq
 ```
-
+## Performance
 ```bash
-curl -s $BASE/performance
+curl -s $BASE/performance | jq
 ```
 
 ---
