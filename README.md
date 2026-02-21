@@ -158,6 +158,112 @@ curl -X POST http://localhost:5477/blackrock/challenge/v1/transactions/parse \
 
 ---
 
+## Commands
+
+Run the server first (`npm start`), then in another terminal set `BASE` and paste these commands in order.
+
+```bash
+export BASE="http://localhost:5477/blackrock/challenge/v1"
+```
+
+```bash
+curl -s $BASE/
+curl -s $BASE/health
+```
+
+```bash
+curl -s -X POST "$BASE/transactions/parse" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "expenses": [
+      {"date": "2023-10-12 20:15:00", "amount": 250},
+      {"date": "2023-02-28 15:49:00", "amount": 375},
+      {"date": "2023-07-01 21:59:00", "amount": 620},
+      {"date": "2023-12-17 08:09:00", "amount": 480}
+    ]
+  }'
+```
+
+```bash
+curl -s -X POST "$BASE/transactions/validator" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "wage": 5000,
+    "transactions": [
+      {"date": "2023-10-12 20:15:00", "amount": 250, "ceiling": 250, "remanent": 0},
+      {"date": "2023-02-28 15:49:00", "amount": 375, "ceiling": 375, "remanent": 25},
+      {"date": "2023-07-01 21:59:00", "amount": 620, "ceiling": 625, "remanent": 75},
+      {"date": "2023-12-17 08:09:00", "amount": 480, "ceiling": 500, "remanent": 75}
+    ]
+  }'
+```
+
+```bash
+curl -s -X POST "$BASE/transactions/filter" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "q": [{"fixed": 0, "start": "2023-07-01 00:00:00", "end": "2023-07-31 23:59:00"}],
+    "p": [{"extra": 25, "start": "2023-10-01 08:00:00", "end": "2023-12-31 19:59:00"}],
+    "k": [
+      {"start": "2023-03-01 00:00:00", "end": "2023-11-30 23:59:00"},
+      {"start": "2023-01-01 00:00:00", "end": "2023-12-31 23:59:00"}
+    ],
+    "transactions": [
+      {"date": "2023-10-12 20:15:00", "amount": 250, "ceiling": 250, "remanent": 0},
+      {"date": "2023-02-28 15:49:00", "amount": 375, "ceiling": 375, "remanent": 25},
+      {"date": "2023-07-01 21:59:00", "amount": 620, "ceiling": 625, "remanent": 75},
+      {"date": "2023-12-17 08:09:00", "amount": 480, "ceiling": 500, "remanent": 75}
+    ]
+  }'
+```
+
+```bash
+curl -s -X POST "$BASE/returns/nps" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "age": 30,
+    "wage": 5000,
+    "q": [{"fixed": 0, "start": "2023-07-01 00:00:00", "end": "2023-07-31 23:59:00"}],
+    "p": [{"extra": 25, "start": "2023-10-01 08:00:00", "end": "2023-12-31 19:59:00"}],
+    "k": [
+      {"start": "2023-03-01 00:00:00", "end": "2023-11-30 23:59:00"},
+      {"start": "2023-01-01 00:00:00", "end": "2023-12-31 23:59:00"}
+    ],
+    "transactions": [
+      {"date": "2023-10-12 20:15:00", "amount": 250, "ceiling": 250, "remanent": 0},
+      {"date": "2023-02-28 15:49:00", "amount": 375, "ceiling": 375, "remanent": 25},
+      {"date": "2023-07-01 21:59:00", "amount": 620, "ceiling": 625, "remanent": 75},
+      {"date": "2023-12-17 08:09:00", "amount": 480, "ceiling": 500, "remanent": 75}
+    ]
+  }'
+```
+
+```bash
+curl -s -X POST "$BASE/returns/index" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "age": 30,
+    "q": [{"fixed": 0, "start": "2023-07-01 00:00:00", "end": "2023-07-31 23:59:00"}],
+    "p": [{"extra": 25, "start": "2023-10-01 08:00:00", "end": "2023-12-31 19:59:00"}],
+    "k": [
+      {"start": "2023-03-01 00:00:00", "end": "2023-11-30 23:59:00"},
+      {"start": "2023-01-01 00:00:00", "end": "2023-12-31 23:59:00"}
+    ],
+    "transactions": [
+      {"date": "2023-10-12 20:15:00", "amount": 250, "ceiling": 250, "remanent": 0},
+      {"date": "2023-02-28 15:49:00", "amount": 375, "ceiling": 375, "remanent": 25},
+      {"date": "2023-07-01 21:59:00", "amount": 620, "ceiling": 625, "remanent": 75},
+      {"date": "2023-12-17 08:09:00", "amount": 480, "ceiling": 500, "remanent": 75}
+    ]
+  }'
+```
+
+```bash
+curl -s $BASE/performance
+```
+
+---
+
 ## Design and security
 
 - **Input validation** — Request bodies and numeric fields are validated; invalid input returns **400** with a clear `error` message.

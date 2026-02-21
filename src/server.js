@@ -11,30 +11,30 @@ const app = express();
 
 app.use(express.json({ limit: BODY_LIMIT }));
 
+const API_OVERVIEW = {
+  name: 'Blackrock Challenge API',
+  basePath: '/blackrock/challenge/v1',
+  health: '/blackrock/challenge/v1/health',
+  endpoints: {
+    'POST /blackrock/challenge/v1/transactions/parse': 'Parse expenses to transactions',
+    'POST /blackrock/challenge/v1/transactions/validator': 'Validate transactions',
+    'POST /blackrock/challenge/v1/transactions/filter': 'Filter by q/p/k periods',
+    'POST /blackrock/challenge/v1/returns/nps': 'NPS returns',
+    'POST /blackrock/challenge/v1/returns/index': 'Index fund returns',
+    'GET /blackrock/challenge/v1/performance': 'Performance stats',
+    'GET /blackrock/challenge/v1/health': 'Liveness check',
+  },
+};
+
+app.get('/', (req, res) => res.json(API_OVERVIEW));
+app.get('/blackrock/challenge/v1', (req, res) => res.json(API_OVERVIEW));
+app.get('/blackrock/challenge/v1/', (req, res) => res.json(API_OVERVIEW));
+app.get('/health', (req, res) => res.json({ status: 'ok' }));
+app.get('/blackrock/challenge/v1/health', (req, res) => res.json({ status: 'ok' }));
+
 app.use('/blackrock/challenge/v1/transactions', transactionsRouter);
 app.use('/blackrock/challenge/v1/returns', returnsRouter);
 app.use('/blackrock/challenge/v1/performance', performanceRouter);
-
-app.get('/', (req, res) => {
-  res.json({
-    name: 'Blackrock Challenge API',
-    basePath: '/blackrock/challenge/v1',
-    health: '/health',
-    endpoints: {
-      'POST /blackrock/challenge/v1/transactions/parse': 'Parse expenses to transactions',
-      'POST /blackrock/challenge/v1/transactions/validator': 'Validate transactions',
-      'POST /blackrock/challenge/v1/transactions/filter': 'Filter by q/p/k periods',
-      'POST /blackrock/challenge/v1/returns/nps': 'NPS returns',
-      'POST /blackrock/challenge/v1/returns/index': 'Index fund returns',
-      'GET /blackrock/challenge/v1/performance': 'Performance stats',
-      'GET /health': 'Liveness check',
-    },
-  });
-});
-
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok' });
-});
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Not found', path: req.path });
