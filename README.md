@@ -1,4 +1,4 @@
-# Blackrock Challenge – Auto-Saving Retirement API
+# Blackrock Challenge – Self-saving for your retirement
 
 REST API for expense-based micro-investments: parse expenses into transactions, validate by wage, filter by q/p/k periods, and compute NPS and Index fund returns.
 
@@ -149,6 +149,7 @@ Response: `transactionsTotalAmount`, `transactionsTotalCeiling`, `savingsByDates
 
 ---
 
-## License
+## Contributors
 
-MIT
+- [Saurabh Raj](https://github.com/rajsaurabh1000)
+
