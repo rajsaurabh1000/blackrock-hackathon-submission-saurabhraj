@@ -1,5 +1,5 @@
-# Build: docker build -t blk-hacking-ind-name-lastname .
-# Base: Debian Bookworm - LTS, minimal footprint, secure defaults (non-root capable)
+# Build: docker build -t blackrock-challenge .
+# Pre-built: ghcr.io/rajsaurabh1000/blackrock-hackathon-saurabhraj:latest
 FROM node:20-bookworm-slim
 
 WORKDIR /app

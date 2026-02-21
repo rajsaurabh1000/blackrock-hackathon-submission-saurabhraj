@@ -1,9 +1,9 @@
-# Optional: run with docker compose up
-# Application is self-contained; no external DB required.
+# docker compose up -d
+# App listens on 5477; no external DB.
 services:
   app:
     build: .
-    image: blk-hacking-ind-name-lastname
+    image: blackrock-challenge
     ports:
       - "5477:5477"
     environment:
