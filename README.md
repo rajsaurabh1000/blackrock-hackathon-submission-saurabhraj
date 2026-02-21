@@ -18,7 +18,7 @@ Public repository and public container image required for submission. No reposit
 
 ---
 
-## Requirements
+## Requirements and dependencies
 
 - **Node.js** ≥ 18 (recommended: 20 LTS)
 - **npm** (included with Node.js)
@@ -44,6 +44,7 @@ export PORT=5477
 ## Run
 
 ### Local (development)
+
 ```bash
 npm install
 npm start
@@ -80,21 +81,12 @@ All tests live under the `test/` directory. Each test file includes a header com
 npm test
 ```
 
-- **Unit / logic** (`test/run-all.js`): parse, filter, NPS/Index against challenge example (4 expenses, full-year 145).
-- **API** (`test/api-test.js`): HTTP against running server; skipped if server is down (exit 0).
+This runs:
 
 1. **Unit / logic tests** (`test/run-all.js`): parse, filter (q/p/k), NPS and Index returns against the challenge PDF example (4 expenses, full-year amount 145, expected profits and return).
 2. **API integration tests** (`test/api-test.js`): HTTP requests to all endpoints. If the server is not reachable, API tests are skipped and the process exits with code 0 so CI does not fail.
 
 ### Run with server (full API coverage)
-
-**Tests inside Docker:**
-
-```bash
-docker run --rm ghcr.io/rajsaurabh1000/blackrock-hackathon-saurabhraj:latest node test/run-all.js
-```
-
-**Run with server (full API coverage):**
 
 ```bash
 # Terminal 1
@@ -104,6 +96,21 @@ npm start
 npm test
 node test/api-test.js
 ```
+
+### Run unit tests inside Docker
+
+```bash
+docker run --rm ghcr.io/rajsaurabh1000/blackrock-hackathon-saurabhraj:latest node test/run-all.js
+```
+
+---
+
+## Deployment (challenge requirements)
+
+- **Container:** Application runs on **port 5477** inside the container.
+- **Port mapping:** `-p 5477:5477` (host:container).
+- **Dockerfile:** First lines contain the pull and run commands for the published image (`ghcr.io/rajsaurabh1000/blackrock-hackathon-saurabhraj:latest`). Base image is Linux (Debian Bookworm Slim) with selection criteria noted in the Dockerfile.
+- **Compose:** `compose.yaml` defines the service and can be run with `docker compose up -d`. No external services required.
 
 ---
 
